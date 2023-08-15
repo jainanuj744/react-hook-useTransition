@@ -1,18 +1,24 @@
-import { useState } from "react";
+import { useState, useTransition } from "react";
 
 export default function List() {
   let [input, setInput] = useState("");
   let [list, setList] = useState([]);
 
+  let [isPending,startTransition] = useTransition("");
+
   const size = 10000;
 
+
+  
   let handleChange = (e) => {
-    setInput(e.target.value);
-    let newList = [];
-    for (let i = 0; i < size; i++) {
-      newList.push(e.target.value);
-    }
-    setList(newList);
+      setInput(e.target.value);
+      startTransition(()=>{
+          let newList = [];
+          for (let i = 0; i < size; i++) {
+            newList.push(e.target.value);
+          }
+          setList(newList);
+      })
   };
 
   return (
@@ -26,7 +32,7 @@ export default function List() {
       ></input>
       {/* <div>{input}</div> */}
       <ul>
-        {list.map((item) => {
+        {isPending?<div>...Loading</div> : list.map((item) => {
           return <li>{item}</li>;
         })}
       </ul>
